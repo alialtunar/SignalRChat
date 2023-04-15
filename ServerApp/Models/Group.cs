@@ -6,6 +6,7 @@ namespace ServerApp.models
     {
          public int GroupId { get; set; }
     public string GroupName { get; set; }
+    public string GroupImg { get; set; }
     public ICollection<Message> Messages { get; set; }
     public ICollection<GroupUser> GroupUsers { get; set; }
     }

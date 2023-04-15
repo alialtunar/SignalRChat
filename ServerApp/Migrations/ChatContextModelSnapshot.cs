@@ -156,12 +156,15 @@ namespace ServerApp.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("GroupImg")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("GroupName")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("GroupId");
 
-                    b.ToTable("Group");
+                    b.ToTable("Groups");
                 });
 
             modelBuilder.Entity("ServerApp.models.GroupUser", b =>
@@ -176,7 +179,7 @@ namespace ServerApp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("GroupUser");
+                    b.ToTable("GroupUsers");
                 });
 
             modelBuilder.Entity("ServerApp.models.Message", b =>
@@ -214,7 +217,7 @@ namespace ServerApp.Migrations
 
                     b.HasIndex("SenderId");
 
-                    b.ToTable("Message");
+                    b.ToTable("Messages");
                 });
 
             modelBuilder.Entity("ServerApp.models.User", b =>
@@ -227,6 +230,9 @@ namespace ServerApp.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -237,6 +243,9 @@ namespace ServerApp.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -273,6 +282,9 @@ namespace ServerApp.Migrations
                     b.Property<string>("UserName")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
+
+                    b.Property<string>("userImg")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 

@@ -19,6 +19,9 @@ using ServerApp.Data;
 using ServerApp.models;
 using ServerApp.Models;
 
+
+
+
 namespace ServerApp
 {
     public class Startup
@@ -31,12 +34,14 @@ namespace ServerApp
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
-        readonly string MyAllowOrigins = "_MyAllowOrigins";
+      
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ChatContext>(x=>x.UseSqlServer("server=.\\SQLEXPRESS; database=Chat.db; integrated Security=SSPI;"));
              services.AddIdentity<User,Role>().AddEntityFrameworkStores<ChatContext>();
-           
+             services.AddScoped<IUserRepository,UserRepository>();
+             services.AddScoped<IMessageRepository,MessageRepository>();
+              services.AddScoped<IGroupRepository,GroupRepository>();
             services.Configure<IdentityOptions>(options=>{
                 options.Password.RequireDigit=true;
                 options.Password.RequireLowercase=true;
@@ -50,17 +55,16 @@ namespace ServerApp
             services.AddControllers().AddNewtonsoftJson(options =>{
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
             });
-            services.AddCors(options=>{
-                options.AddPolicy(
-                    name:MyAllowOrigins,
-                    builder=>{
-                        builder
-                        .AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();                    
-                    }
-                );
-            });
+           services.AddCors(options =>
+{
+    options.AddPolicy("AllowOrigin",
+        builder => builder.WithOrigins("http://localhost:4200")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod()
+                          .AllowCredentials());
+});
+
+
             services.AddAuthentication(x=>{
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                  x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -77,6 +81,9 @@ namespace ServerApp
                };
 
              });
+             
+             services.AddHttpContextAccessor();
+
 
             services.AddControllers();
              services.AddSignalR();
@@ -90,9 +97,12 @@ namespace ServerApp
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseRouting();
+             app.UseCors("AllowOrigin");
+
+              app.UseAuthentication(); 
 
             app.UseAuthorization();
 
