@@ -1,0 +1,50 @@
+.btn-secondary{
+  color: #fff!important;
+ background-color: #fff!important;
+ border: none!important;
+}
+
+.text {
+  word-wrap: break-word;
+  word-break: break-all;
+
+}
+
+
+.dropdown-menu[style] {
+   right: 0%!important;
+}
+
+.cursor{
+  cursor: pointer;
+}
+
+
+.yaziyor-animasyon {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  right: 38px;
+}
+
+.nokta {
+  display: inline-block;
+ font-size: 100px;
+  animation: yaziyorAnimasyon 1s infinite;
+}
+
+@keyframes yaziyorAnimasyon {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.bg--primary {
+  background-color: #16a085;
+}

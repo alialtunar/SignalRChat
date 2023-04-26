@@ -1,0 +1,448 @@
+
+<div class="tab_content">
+  <div class="tab_pane chats-tab active">
+    <div class="sidebar-header p-3">
+      <h1 class="mb-3">chats</h1>
+      <div class="search position-relative mb-3">
+        <form action="#" class="form search-form-1">
+          <input type="text" placeholder="search" class="w-100"/>
+          <button type="button"><i class="fa fa-search"></i></button>
+        </form>
+      </div>
+      <h2 class="text-capitalize font-weight--700">Sohbetler</h2>
+
+    </div>
+    <div class="p-3">
+      <div class="chat-list">
+        <ul class="nav remove-space--bottom">
+
+          <li (click)="userActive()" *ngFor="let item of lastMessages" class="chat-item border border--gray nav-item w-100 rounded mb-3">
+            <a (click)="selectUser(item)" class="nav-link d-flex justify-content-between p-3" >
+              <div class="d-flex">
+                <div class="position-relative">
+                  <img [src]="item?.userImg ? 'http://localhost:5000/img/' + item?.userImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="rounded-circle me-3 hw-40 img-fluid">
+
+                  <span [class.away]="!isActiveUser(item.contactName)" class="status online position-absolute"></span>
+                </div>
+                <div class="chat-content">
+                  <h3>{{item?.fullName}}</h3>
+                  <p>{{item?.lastMessage}}</p>
+                </div>
+              </div>
+              <div class="chat-time">
+                <h3 class="text--gray-200">{{item?.lastMessageDate | date:'HH:mm'}}</h3>
+              </div>
+            </a>
+          </li>
+
+          <li (click)="groupActive()" *ngFor="let item of lastGroupmessages" class="chat-item border border--gray nav-item w-100 rounded mb-3">
+            <a (click)="choseGroup(item)" class="nav-link d-flex justify-content-between p-3" >
+              <div class="d-flex">
+                <div class="position-relative">
+                  <img [src]="item?.groupImg ? 'http://localhost:5000/img/' + item?.groupImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="rounded-circle me-3 hw-40 img-fluid">
+                  <span class="status away position-absolute"></span>
+                </div>
+                <div class="chat-content">
+                  <h3>{{item?.groupName}}</h3>
+                  <h5>{{item?.senderFullName}}</h5>
+                  <p>{{item?.text}}</p>
+                </div>
+              </div>
+              <div class="chat-time">
+                <h3 class="text--gray-200">{{item?.dateSent | date:'HH:mm'}}</h3>
+              </div>
+            </a>
+          </li>
+
+
+
+        </ul>
+      </div>
+    </div>
+  </div>
+  <!-- tab-pane end  -->
+  <div class="tab_pane profile-tab" style="display: none;">
+    <div class="sidebar-header p-3">
+      <h1>Profil</h1>
+      <p>Kişisel Bilgiler</p>
+    </div>
+    <div class="p-3">
+      <div class="d-flex justify-content-center position-relative mb-2">
+        <div class="text-center">
+          <img [src]="user?.userImg ? 'http://localhost:5000/img/' + user?.userImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="hw-100 rounded-circle mb-1 img-fluid">
+
+          <h2>{{user?.userName}}</h2>
+          <span class="status online position-relative">Online</span>
+        </div>
+
+      </div>
+      <div class="description border-bottom border--gray pb-3 mb-5">
+        <h6 class="text-center">{{user?.bio}}</h6>
+      </div>
+      <div class="user-profile-accordion accordion accordion-flush remove-space--bottom" id="accordionExample1">
+        <div class="accordion-item border border--gray mb-3">
+          <h3 class="accordion-header" id="flush-headingOne">
+            <button class="accordion-button collapsed p-3 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="true" aria-controls="flush-collapseOne"><i class="far fa-user me-2"></i>Hakkımda</button>
+          </h3>
+          <div id="flush-collapseOne" class="accordion-collapse collapse border-0" aria-labelledby="flush-headingOne" data-bs-parent="#accordionExample1">
+            <div class="card-body bg--white remove-space--bottom">
+              <div class="mb-4">
+                <p>Ad Soyad</p>
+                <h3>{{user?.fullName}}</h3>
+              </div>
+              <div class="mb-4">
+                <p>Email</p>
+                <a href="mailto:{{user?.email}}" class="email-address">{{user?.email}}</a>
+              </div>
+              <div class="mb-4">
+                <p>Time</p>
+                <h3>10PM</h3>
+              </div>
+              <div class="mb-4">
+                <p>Biografi</p>
+                <p>{{user?.bio}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item border border--gray mb-3">
+          <h3 class="accordion-header" id="flush-headingTwo">
+            <button class="accordion-button collapsed p-3 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo"><i class="fas fa-paperclip  me-2"></i>Alınan Dosyalar</button>
+          </h3>
+          <div id="flush-collapseTwo" class="accordion-collapse collapse border-0" aria-labelledby="flush-headingTwo" data-bs-parent="#accordionExample1">
+            <div class="card-body bg--white">
+              <div class="d-flex justify-content-between align-items-center mb-3 border px-3 py-2">
+                <i class="far fa-images text--primary font-size--18"></i>
+                <div>
+                  <h3>1.png</h3>
+                  <p>23.00 KB </p>
+                </div>
+                <a href="assets/images/avatar/profile.png" download><i class="fas fa-download text--dark-100"></i></a>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-3 border px-3 py-2">
+                <i class="far fa-file-archive text--primary font-size--18"></i>
+                <div>
+                  <h3>1.png</h3>
+                  <p>442.00 KB </p>
+                </div>
+                <a href="assets/zip/fontawesome.zip" download><i class="fas fa-download text--dark-100"></i></a>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-3 border px-3 py-2">
+                <i class="far fa-images text--primary font-size--18"></i>
+                <div>
+                  <h3>1.png</h3>
+                  <p>23.00 KB </p>
+                </div>
+                <a href="assets/images/avatar/profile.png" download><i class="fas fa-download text--dark-100"></i></a>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-3 border px-3 py-2">
+                <i class="far fa-file-archive text--primary font-size--18"></i>
+                <div>
+                  <h3>1.png</h3>
+                  <p>442.00 KB </p>
+                </div>
+                <a href="assets/zip/fontawesome.zip" download><i class="fas fa-download text--dark-100"></i></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- tab-pane end  -->
+  <div class="tab_pane groups-tab" style="display: none;">
+    <div class="sidebar-header p-3">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>gruplar</h1>
+        <i class="fas fa-user-circle text--dark-100"></i>
+      </div>
+      <div class="search position-relative mb-3">
+        <form action="#" class="form search-form-1">
+          <input type="text" placeholder="search" class="w-100"/>
+          <button type="button"><i class="fa fa-search"></i></button>
+        </form>
+      </div>
+    </div>
+    <div class="p-3">
+      <ul class="list-unstyled">
+        <li  class="cursor-pointer" >
+          <a  data-toggle="pill" class="w-100">
+            <div class="media d-flex justify-content-between align-items-center rounded p-3">
+              <div class="chat-user d-flex align-items-center">
+
+                <div style="align-items: center; justify-content: center; display: flex;">
+
+                  <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="Grup İsmi" [(ngModel)]="groupName" aria-label="Recipient's username" aria-describedby="button-addon2">
+<button (click)="createGroup(groupName)" class="btn btn-outline-secondary" type="button" id="button-addon2">Grup Oluştur</button>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </a>
+        </li>
+        <hr>
+        <li (click)="groupActive()" class="cursor-pointer" *ngFor="let item of groups">
+          <a (click)="selectGroup(item)" data-toggle="pill" class="w-100">
+            <div class="media d-flex justify-content-between align-items-center rounded p-3">
+              <div class="chat-user d-flex align-items-center">
+                <h2 class="d-flex align-items-center justify-content-center text-capitalize rounded-circle font-weight--700 text--primary me-3">{{ item?.groupName.charAt(0) }}
+                </h2>
+                <div style="align-items: center; justify-content: center; display: flex;">
+                  <h3 class="">#{{item?.groupName}}</h3>
+                  <p class="pt-2 ps-1 text-lead" *ngIf="item?.isMember">Katıldınız</p>
+                  <p (click)="joinGroup(item.groupName)" class="pt-2 ps-2 text-lead fs-3" *ngIf="!item?.isMember"><i class="fa-solid fa-right-to-bracket"></i></p>
+                </div>
+              </div>
+            </div>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <!-- tab-pane end  -->
+  <div class="tab_pane contacts-tab" style="display: none">
+    <div class="sidebar-header p-3">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Kişiler</h1>
+        <i class="fas fa-user-circle text--dark-100"></i>
+      </div>
+      <div class="search position-relative mb-3">
+        <form action="#" class="form search-form-1">
+          <input type="text" placeholder="search" class="w-100"/>
+          <button type="button"><i class="fa fa-search"></i></button>
+        </form>
+      </div>
+    </div>
+    <div class="p-3">
+      <ul class="contact-list list-unstyled remove-space--bottom">
+        <li (click)="choseUser(item)" class="mb-5" *ngFor="let item of users">
+          <div class="position-relative d-flex align-items-center mb-3">
+            <span [class.away]="!isActiveUser(item.userName)" class="status online position-relative pe-3 mb-1"></span> <a (click)="userActive()" data-toggle="pill"  class="text--dark-100 font-weight--500 font-size--16 cursor-pointer">{{item?.fullName}}</a>
+
+            <div class="dropdown user-chat-nav position-absolute">
+              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-ellipsis-v text--dark-100"></i>
+              </button>
+              <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                <li><a class="dropdown-item d-flex justify-content-between align-items-center" >share<i class="fas fa-share-alt"></i></a></li>
+                <li><a class="dropdown-item d-flex justify-content-between align-items-center" >block<i class="fas fa-ban"></i></a></li>
+                <li><a class="dropdown-item d-flex justify-content-between align-items-center" >remove<i class="fas fa-trash-alt"></i></a></li>
+              </ul>
+            </div>
+
+          </div>
+
+        </li>
+
+
+      </ul>
+    </div>
+  </div>
+  <!-- tab-pane end  -->
+  <div class="tab_pane setting-tab" style="display: none;">
+    <div class="sidebar-header p-3">
+        <h1>Ayarlar</h1>
+    </div>
+    <div class="p-3">
+      <div class="d-flex justify-content-center position-relative mb-2">
+        <div class="text-center">
+          <img [src]="user?.userImg ? 'http://localhost:5000/img/' + user?.userImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="hw-100 rounded-circle mb-1 img-fluid">
+          <h2>{{user?.fullName}}</h2>
+          <div class="dropdown user-chat-nav">
+            <button class="btn dropdown-toggle text--dark-100" type="button" id="dropdownMenuButton7" data-bs-toggle="dropdown" aria-expanded="false">active<i class="fas fa-chevron-down ms-2"></i>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton7">
+              <li><a class="dropdown-item" >active</a></li>
+              <li><a class="dropdown-item" >busy</a></li>
+              <li><a class="dropdown-item" >away</a></li>
+            </ul>
+          </div>
+        </div>
+        <div class="dropdown user-chat-nav position-absolute">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton8" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-ellipsis-v text--dark-100"></i>
+          </button>
+          <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton8">
+            <li><a class="dropdown-item" >edit</a></li>
+            <li><a class="dropdown-item" >action</a></li>
+            <li><a class="dropdown-item" >another action</a></li>
+          </ul>
+        </div>
+
+      </div>
+      <div class="accordion" id="accordionExample2">
+        <div class="accordion-item border border--gray mb-3">
+          <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">Kişisel Bilgiler</button>
+          </h2>
+          <div id="collapseOne" class="accordion-collapse collapse show border-0" aria-labelledby="headingOne" data-bs-parent="#accordionExample2">
+            <div class="card-body bg--white remove-space--bottom">
+              <div class="mb-4 d-flex justify-content-between">
+                <div>
+                  <p>Ad ve Soyad</p>
+                  <h3>{{user?.fullName}}</h3>
+                </div>
+                <div class="update-info">
+                  <!-- Button trigger modal -->
+                  <button type="button" class="btn btn-sm text-capitalize" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <span class="btn-text text--dark-100"><i class="far fa-edit"></i></span>Düzenle
+                  </button>
+                  <!-- Modal -->
+                  <div class="modal fade ps-0" id="exampleModal" tabindex="-1">
+                    <div class="modal-dialog d-flex align-items-center h-100">
+                      <div class="modal-content">
+                        <div class="modal-header">
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                          <form class="form modal-form" (ngSubmit)="onSubmit()" #updateUserForm="ngForm" enctype="multipart/form-data">
+                            <div class="form-group mb-4">
+                              <label for="name" class="font-size--14 text--dark-100 text-capitalize mb-1">Ad ve Soyad</label>
+                              <input type="text" class="form-control" id="fullName" [(ngModel)]="userForUpdateDTO.fullName" name="fullName" placeholder="Ad ve Soyad" required="">
+                            </div>
+                            <div class="form-group mb-4">
+                              <label for="email" class="font-size--14 text--dark-100 text-capitalize mb-1">Email</label>
+                              <input type="email" class="form-control" id="email" [(ngModel)]="userForUpdateDTO.email" name="email" placeholder="Email" required="">
+                            </div>
+                            <div class="form-group mb-4">
+                              <label for="time" class="font-size--14 text--dark-100 text-capitalize mb-1">Profil Resmi</label>
+                              <input type="file" class="form-control" id="file" required="" id="userImg" name="userImg" (change)="onprofilImageSelected($event)">
+                            </div>
+                            <div class="form-group mb-4">
+                              <label for="address" class="font-size--14 text--dark-100 text-capitalize mb-1">Biografi</label>
+                              <input type="text" class="form-control" id="bio" [(ngModel)]="userForUpdateDTO.bio" name="bio" placeholder="Biografi" required="">
+                            </div>
+                            <button type="submit" class="btn bg-primary text-white">Kaydet</button>
+                          </form>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="mb-4">
+                <p>Email</p>
+                <a href="mailto:catherine.richard@gmail.com" class="email-address">{{user?.email}}</a>
+              </div>
+              <div class="mb-4">
+                <p>Profil Resmi</p>
+                <h3>{{user?.userImg}}</h3>
+              </div>
+              <div class="mb-4">
+                <p>Biografi</p>
+                <h5>{{user?.bio}}</h5>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item border border--gray mb-3">
+          <h3 class="accordion-header" id="headingTwo">
+            <button class="accordion-button collapsed border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">Gizlilik</button>
+          </h3>
+          <div id="collapseTwo" class="accordion-collapse collapse border-0" aria-labelledby="headingTwo" data-bs-parent="#accordionExample2">
+            <div class="card-body bg--white position-relative remove-space--bottom">
+              <div class="card-item d-flex justify-content-between align-items-center mb-3 px-3">
+                <h3>Profile photo</h3>
+                <div class="dropdown user-chat-nav position-absolute">
+                  <button class="btn dropdown-toggle text--dark-100 text-capitalize" type="button" id="dropdownMenuButton9" data-bs-toggle="dropdown" aria-expanded="false">Herkes
+                    <i class="fas fa-chevron-down"></i>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton9">
+                    <li><a class="dropdown-item" >Herkes</a></li>
+                    <li><a class="dropdown-item" >selected</a></li>
+                    <li><a class="dropdown-item" >Hiçkimse</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="card-item d-flex justify-content-between align-items-center mb-3 px-3">
+                <h3>Status</h3>
+                <div class="dropdown user-chat-nav position-absolute">
+                  <button class="btn dropdown-toggle text--dark-100 text-capitalize" type="button" id="dropdownMenuButton10" data-bs-toggle="dropdown" aria-expanded="false">Herkes
+                    <i class="fas fa-chevron-down"></i>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton10">
+                    <li><a class="dropdown-item" >Herkes</a></li>
+                    <li><a class="dropdown-item" >selected</a></li>
+                    <li><a class="dropdown-item" >Hiçkimse</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="card-item d-flex justify-content-between align-items-center mb-3 px-3">
+                <h3>Gruplar</h3>
+                <div class="dropdown user-chat-nav position-absolute">
+                  <button class="btn dropdown-toggle text--dark-100 text-capitalize" type="button" id="dropdownMenuButton11" data-bs-toggle="dropdown" aria-expanded="false">Herkes
+                    <i class="fas fa-chevron-down"></i>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton11">
+                    <li><a class="dropdown-item" >Herkes</a></li>
+                    <li><a class="dropdown-item" >selected</a></li>
+                    <li><a class="dropdown-item" >Hiçkimse</a></li>
+                  </ul>
+                </div>
+              </div>
+              <div class="card-item d-flex flex-column mb-3 px-3 py-2 remove-space--bottom">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h3>last seen</h3>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked1" checked>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h3>Read receipts</h3>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked2" checked>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h3>Auto backup</h3>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked3" checked>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h3>Media auto download</h3>
+                  <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked4" checked>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item border border--gray mb-3">
+          <h3 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">Güvenlik</button>
+          </h3>
+          <div id="collapseThree" class="accordion-collapse collapse border-0" aria-labelledby="headingThree" data-bs-parent="#accordionExample2">
+            <div class="card-body bg--white position-relative">
+              <div class="card-item d-flex justify-content-between align-items-center px-3">
+                <h3>Show security notification</h3>
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="accordion-item border border--gray mb-3">
+          <h3 class="accordion-header" id="headingFour">
+            <button class="accordion-button collapsed border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">Yardım</button>
+          </h3>
+          <div id="collapseFour" class="accordion-collapse collapse border-0" aria-labelledby="headingFour" data-bs-parent="#accordionExample2">
+            <div class="card-body bg--white position-relative">
+              <div class="card-item">
+                <h3 class="mb-3">Bilgi</h3>
+                <h3 class="mb-3">İletişim</h3>
+                <h3>Terms & Privacy policy</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- tab-pane end  -->
+</div>

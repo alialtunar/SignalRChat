@@ -1,0 +1,9 @@
+{
+    "version": 3,
+    "mappings": "AAAA,AAAA,cAAc,CAAA;EACZ,KAAK,EAAE,IAAI,CAAA,UAAU;EACtB,gBAAgB,EAAE,IAAI,CAAA,UAAU;EAChC,MAAM,EAAE,IAAI,CAAA,UAAU;CACtB;;AAED,AAAA,KAAK,CAAC;EACJ,SAAS,EAAE,UAAU;EACrB,UAAU,EAAE,SAAS;CAEtB",
+    "sources": [
+        "chatpage.component.scss"
+    ],
+    "names": [],
+    "file": "chatpage.component.css"
+}

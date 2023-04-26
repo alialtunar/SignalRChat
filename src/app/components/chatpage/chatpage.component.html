@@ -1,0 +1,509 @@
+
+<body data-appearance="light">
+    <div class="layout d-lg-flex">
+       <!-- =========== Navigation Start ============ -->
+        <div class="navigation z-index1 pt-lg-4 d-flex flex-lg-column justify-content-lg-between text-center bg--primary">
+          <a class="logo d-none d-lg-block" href="index.html">
+           <img src="assets/images/logo.svg" alt="" class="svg img-fluid">
+          </a>
+        <!-- Logo End -->
+          <ul class="list-unstyled m-0 d-flex d-lg-block">
+            <li data-li="chats-tab" class="active">
+              <a  class="nav-link" data-tooltip="Mesajlar" data-placement="top">
+                <i class="far fa-comment-alt"></i>
+              </a>
+            </li>
+            <li data-li="profile-tab">
+              <a  class="nav-link" data-tooltip="Profil" data-placement="top">
+                <i class="far fa-user"></i>
+              </a>
+            </li>
+            <li data-li="groups-tab">
+              <a  class="nav-link" data-tooltip="Gruplar" data-placement="top">
+                <i class="fas fa-user-circle"></i>
+              </a>
+            </li>
+            <li data-li="contacts-tab">
+              <a  class="nav-link" data-tooltip="Kişiler" data-placement="top">
+                <i class="far fa-address-card"></i>
+              </a>
+            </li>
+            <li data-li="setting-tab">
+              <a  class="nav-link" data-tooltip="Ayarlar" data-placement="top">
+                <i class="fas fa-cog"></i>
+              </a>
+            </li>
+            <li>
+              <a onclick="visitPage()" class="nav-link d-lg-none" data-tooltip="logout" data-placement="top">
+                  <i class="fas fa-sign-out-alt"></i>
+              </a>
+            </li>
+          </ul>
+          <div class="m-0 d-none d-lg-block">
+            <a click="visitPage()" class="nav-link m-0" data-tooltip="logout" data-placement="top">
+              <i class="fas fa-sign-out-alt"></i>
+            </a>
+          </div>
+        </div>
+         <!-- =========== Navigation End ============ -->
+
+         <aside class="sidebar border-end border--gray">
+          <app-sidebar [(receiverUserName)]="receiverUserName" [(groupName)]="groupName"  [oldMessage]="parentOldMessage" (oldMessageChange)="onOldMessageChange($event)" (parentOldGroupChange)="onparentOldMessageChange($event)"  [userForChat]="userForChat" (userForChatChange)="onUserForChatChange($event)" (userChatActiveClick)="chatUserActive()" [group]="group" (groupForChatChange)="onGroupForChatChange($event)"
+           (groupChatActiveClick)="chatGroupActive()"  [onlineUser]="parentOnlineUser" (onlineUserChange)="onOnlineUserChange($event)"></app-sidebar>
+
+
+         </aside>
+
+         <!-- =========== Sidebar End ============ -->
+
+        <!-- =========== Chats Start ============ -->
+        <div id="chat-content"  class="chats tab-content w-100">
+
+          <!-- chat body end -->
+          <div id="chatUser" class="chat-body tab-pane fade ">
+            <div class="chat-header d-flex  justify-content-between align-items-center border-bottom border--gray p-4 sticky-top bg--white">
+              <div class="media d-flex align-items-center">
+                <div  class="close-icon user-chat-remove d-lg-none me-3"><i class="fas fa-arrow-left font-size--14 text--dark-100"></i></div>
+                <div class="position-relative">
+                  <img [src]="userForChat?.userImg ? 'http://localhost:5000/img/' + userForChat?.userImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="rounded-circle me-3 hw-40">
+                  <span [class.away]="!isActiveUser(userForChat?.userName)" class="status online"></span>
+                </div>
+                  <div class="media-body">
+                    <a><h3 class="user-nam cursor">{{userForChat?.fullName}}</h3></a>
+                  </div>
+              </div>
+              <ul class="user-chat-nav list-unstyled d-flex align-items-center m-0 remove-space--right">
+                <li class="chat-search-form position-relative me-4">
+                  <a  class="search-btn cursor">
+                    <i class="fas fa-search text--dark-100 font-size--18"></i>
+                  </a>
+                  <form action="#" class="form search-form-1 position-absolute">
+                    <input type="text" placeholder="search" class="w-100"/>
+                    <button type="button"><i class="fas fa-search text--dark-100 font-size--18"></i></button>
+                  </form>
+                </li>
+                <li class="me-4">
+                  <a (click)="otherUser(userForChat)" class="user-icon cursor">
+                    <i class="far fa-user text--dark-100 font-size--18"></i>
+                  </a>
+                </li>
+
+                <li class="me-4 d-none d-lg-block d-xl-block">
+                  <a (click)="chatUserClose()" class="close-icon cursor">
+                    <i class="fa-regular fa-circle-xmark text--dark-100 font-size--18"></i>
+                  </a>
+                </li>
+
+                <li class="me-4">
+                  <div class="dropdown">
+                    <button class="btn p-0 btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton23" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v text--dark-100 font-size--18"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton23">
+                      <li>
+                        <a class="dropdown-item d-flex justify-content-between align-items-center font-size--14" >archive<i class="fas fa-archive"></i></a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item d-flex justify-content-between align-items-center font-size--14" >block<i class="fas fa-ban"></i></a></li>
+                      <li>
+                        <a class="dropdown-item d-flex justify-content-between align-items-center font-size--14" >delete<i class="fas fa-trash-alt"></i></a>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <!-- message header end -->
+            <div  class="chat-content pb-5 px-5 pt-2" >
+
+              <div class="date text-center mb-5">
+                <button  (click)="getOldMessages()" class="btn btn-light">Daha Fazla</button>
+              </div>
+              <div *ngFor="let item of parentOldMessage">
+                <ng-container [ngSwitch]="item.type">
+              <div *ngSwitchCase="1" class="message mb-5 d-flex">
+                <div class=" d-flex">
+
+                  <div class="text" >
+                    <div  class="d-flex">
+                      <p class="pb-1" *ngIf="item.text">{{item.text}}</p>
+                      <a target="_blank" *ngIf="item.fileType === 'image/png' || item.fileType === 'image/jpeg'" [href]="'http://localhost:5000/img/'+item.filePath"> <img  class="pb-3" width="200px" height="200px" [src]="'http://localhost:5000/img/' + item.filePath"></a>
+
+                     <video class="pb-3" *ngIf="item.fileType === 'video/mp4'" width="220px" height="220px" preload="metadata"  controls>
+            <source [src]="'http://localhost:5000/api/messages/api/videos/'+item.filePath" type="video/mp4">
+          </video>
+
+
+          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'"> <img width="200px" height="200px" src="assets\images\pdf.png" alt=""></a>
+
+          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/zip'">
+            <img width="200px" height="200px" src="assets\images\zip.png" alt="">
+          </a>
+
+          <!-- Dosya tipi text/plain ise -->
+          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'text/plain'">
+            <!-- Plain text dosyası için bir görsel veya simge kullanabilirsiniz -->
+            <img width="200px" height="200px" src="assets\images\txt-file.png" alt="">
+          </a>
+
+          <!-- Dosya tipi officedocument.wordprocessingml.document ise -->
+          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'">
+            <!-- Word dosyası için bir görsel veya simge kullanabilirsiniz -->
+            <img width="200px" height="200px" src="assets\images\word.png" alt="">
+          </a>
+
+                      <div class="dropdown ms-3 d-flex align-items-start">
+                        <a  class="mt-1"> <i class="fas fa-reply text--dark-100"></i></a>
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton26" data-bs-toggle="dropdown" aria-expanded="false">
+                          <i class="fas fa-ellipsis-v text--dark-100"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton26">
+                          <li><a class="dropdown-item d-flex justify-content-between align-items-center text--dark-100 font-size--14" >copy<i class="far fa-copy text--dark-100"></i></a></li>
+                          <li><a class="dropdown-item d-flex justify-content-between align-items-center text--dark-100 font-size--14" >remove<i class="fas fa-trash-alt text--dark-100"></i></a></li>
+                        </ul>
+                      </div>
+                    </div>
+                    <span class="time">{{item.dateSent | date:'HH:mm'}}</span>
+                  </div>
+                </div>
+              </div>
+              <!-- message end -->
+              <div *ngSwitchCase="0" class="message right mb-5 d-flex justify-content-end">
+                <div  class=" d-flex">
+
+                 <div class="text">
+                   <div class="d-flex">
+                     <p class="" *ngIf="item.text">{{item.text}}</p>
+                   <a target="_blank" *ngIf="item.fileType === 'image/png' || item.fileType === 'image/jpeg'" [href]="'http://localhost:5000/img/'+item.filePath"> <img  class="pb-3 rounded" width="200px" height="200px" [src]="'http://localhost:5000/img/' + item.filePath"></a>
+
+                     <video class="pb-3 rounded" *ngIf="item.fileType === 'video/mp4'" width="220px" height="220px" preload="metadata"  controls>
+            <source [src]="'http://localhost:5000/api/messages/api/videos/'+item.filePath" type="video/mp4">
+          </video>
+          <a class="rounded" [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'"> <img width="200px" height="200px" src="assets\images\pdf.png" alt=""></a>
+
+          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"> <img width="200px" height="200px" src="assets\images\word.png" alt=""></a>
+
+          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/zip'">
+            <img width="200px" height="200px" src="assets\images\zip.png" alt="">
+          </a>
+
+          <!-- Dosya tipi text/plain ise -->
+          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'text/plain'">
+            <!-- Plain text dosyası için bir görsel veya simge kullanabilirsiniz -->
+            <img width="200px" height="200px" src="assets\images\txt-file.png" alt="">
+          </a>
+
+                     <div class="dropdown ms-3 d-flex align-items-center">
+                      <a  class="mt-1"> <i class="fas fa-reply text--dark-100"></i></a>
+                       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton28" data-bs-toggle="dropdown" aria-expanded="false">
+                         <i class="fas fa-ellipsis-v text--dark-100"></i>
+                       </button>
+                       <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton28">
+                         <li><a class="dropdown-item d-flex justify-content-between align-items-center text--dark-100 font-size--14" >Kopyala<i class="far fa-copy text--dark-100"></i></a></li>
+                         <li><a class="dropdown-item d-flex justify-content-between align-items-center text--dark-100 font-size--14" >Sil<i class="fas fa-trash-alt text--dark-100"></i></a></li>
+                       </ul>
+                     </div>
+                   </div>
+                   <span class="time">{{item.dateSent | date:'HH:mm'}}</span>
+                 </div>
+                </div>
+              </div>
+            </ng-container>
+            </div>
+            <div *ngIf="isWriting(userForChat?.userName)" class=" yaziyor-animasyon">
+              <span class="nokta">.</span>
+              <span class="nokta">.</span>
+              <span class="nokta">.</span>
+            </div>
+            </div>
+            <!-- message content end -->
+            <div class="chat-footer position-fixed bottom-0 bg--light-gray-200">
+              <form action="#" class="form" enctype="multipart/form-data">
+                <div class="d-flex">
+                  <div class="dropdown d-flex">
+                    <button class="btn p-0 btn-secondary dropdown-toggle ms-2" type="button" id="dropdownMenuButton33" data-bs-toggle="dropdown" aria-expanded="false">
+                     <i class="fas fa-plus-circle text--dark-100 font-size--18 ms-3"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton33">
+                      <li class="input-file dropdown-item">
+                        <label id="files3" class="btn text-decoration-none d-flex justify-content-between align-items-center font-size--14 p-0"><i class="far fa-file-archive me-2"></i>Dosya Gönder
+                        <input (change)="onfileSelected($event)" name="fileInput"  type="file" class="form-control-file d-none"></label>
+                      </li>
+                      <li class="input-file dropdown-item">
+
+                      </li>
+                      <li>
+                        <a class="dropdown-item d-flex justify-content-between align-items-center font-size--14" ><i class="far fa-smile-beam me-2"></i>emoji</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="input-group">
+                    <textarea name="myTextarea" (focus)="chanceWrite()" (blur)="onFocusWrite()"  #myTextarea class="form-control border-0 rounded p-2 mx-2" id="FormControlTextarea2"  rows="1"></textarea>
+                  </div>
+                  <button (click)="sendMessage()" type="submit" class="btn bg--primary submit-btn text-white me-2"><i class="fas fa-paper-plane"></i></button>
+                </div>
+              </form>
+            </div>
+            <!-- message footer end -->
+            <div class="right-sidebar border-start border--gray">
+              <div class="profile-info d-flex justify-content-center py-3 mb-2 border-bottom border--gray sticky-top bg--white">
+                <div class="text-center">
+                  <img [src]="otheruser?.userImg ? 'http://localhost:5000/img/' + userForChat?.userImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="hw-100 rounded-circle mb-1 img-fluid">
+                  <h2>{{otheruser?.fullName}}</h2>
+                  <span [class.away]="!isActiveUser(otheruser?.userName)" class="status online position-relative"><p *ngIf="otheruser?.isActive">Aktif</p>
+                    <p *ngIf="!isActiveUser(otheruser?.userName)">Aktif Değil</p></span>
+
+                </div>
+                <div class="close-icon user-profile-hide position-absolute"><i class="fas fa-times"></i></div>
+              </div>
+              <div class="description text-center pb-1 mb-2 px-3">
+                <h5>{{otheruser?.bio}}</h5>
+              </div>
+              <div class="user-profile-accordion accordion px-3" id="accordionExample10">
+                <div class="accordion-item border border--gray mb-3">
+                  <h2 class="accordion-header" id="heading7">
+                    <button class="accordion-button bg--light-gray-200 p-3 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse7" aria-expanded="true" aria-controls="collapse7"><i class="far fa-user me-2"></i>Kişisel Bilgiler</button>
+                  </h2>
+                  <div id="collapse7" class="accordion-collapse collapse show border-0" aria-labelledby="heading7" data-bs-parent="#accordionExample10">
+                    <div class="card-body bg--white remove-space--bottom">
+                      <div class="mb-4">
+                        <p>Ad ve Soyad</p>
+                        <h3>{{otheruser?.fullName}}</h3>
+                      </div>
+                      <div class="mb-4">
+                        <p>Email</p>
+                        <a href="mailto:{{otheruser?.email}}" class="email-address">{{otheruser?.email}}</a>
+                      </div>
+                      <!-- <div class="mb-4">
+                        <p>Time</p>
+                        <h3>10PM</h3>
+                      </div> -->
+                      <div class="mb-4">
+                        <p>Biografi</p>
+                        <h6>{{otheruser?.bio}}</h6>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+          <div id="chatGroup" class="chat-body tab-pane fade ">
+            <div class="chat-header d-flex  justify-content-between align-items-center border-bottom border--gray p-4 sticky-top bg--white">
+              <div *ngFor="let g of group" class="media d-flex align-items-center">
+                <div (click)="closeChat()" class="close-icon user-chat-remove d-lg-none me-3"><i class="fas fa-arrow-left font-size--14 text--dark-100"></i></div>
+                <div class="position-relative">
+                  <img [src]="g?.groupImg ? 'http://localhost:5000/img/' + g?.groupImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="rounded-circle me-3 hw-40">
+                  <span class="status away online"></span>
+                </div>
+                  <div class="media-body">
+                    <a><h3 class="cursor user-icon">{{g?.groupName}}</h3></a>
+                  </div>
+              </div>
+              <ul class="user-chat-nav list-unstyled d-flex align-items-center m-0 remove-space--right">
+                <li class="chat-search-form position-relative me-4">
+                  <a class="search-btn cursor" >
+                    <i class="fas fa-search text--dark-100 font-size--18"></i>
+                  </a>
+                  <form action="#" class="form search-form-1 position-absolute">
+                    <input type="text" placeholder="search" class="w-100"/>
+                    <button type="button"><i class="fas fa-search text--dark-100 font-size--18 cursor"></i></button>
+                  </form>
+                </li>
+                <li class="me-4">
+                  <a (click)="loadGroupUsers()" class="user-icon">
+                    <i class="far fa-user text--dark-100 font-size--18 cursor"></i>
+                  </a>
+                </li>
+                <li class="me-4">
+                  <a (click)="chatGroupClose()" class="close-icon cursor">
+                    <i class="fa-regular fa-circle-xmark text--dark-100 font-size--18"></i>
+                  </a>
+                </li>
+                <li class="me-4">
+                  <div class="dropdown">
+                    <button class="btn p-0 btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton23" data-bs-toggle="dropdown" aria-expanded="false">
+                      <i class="fas fa-ellipsis-v text--dark-100 font-size--18"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton23">
+                      <li>
+                        <a (click)="leaveGroup()" class="dropdown-item d-flex justify-content-between align-items-center font-size--14 cursor" >Ayrıl<i class="fas fa-archive"></i></a>
+                      </li>
+                      <li>
+                        <a class="dropdown-item d-flex justify-content-between align-items-center font-size--14 cursor" >block<i class="fas fa-ban"></i></a></li>
+                      <li>
+                        <a class="dropdown-item d-flex justify-content-between align-items-center font-size--14 cursor" >delete<i class="fas fa-trash-alt"></i></a>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <!-- message header end -->
+            <div  class="chat-content pb-5 px-5 pt-2" >
+
+
+              <div class="date text-center mb-2">
+                <button  (click)="getOldGroupMessages()" class="btn btn-light">Daha Fazla</button>
+              </div>
+              <div *ngFor="let item of parentOldGroupMessage">
+                <ng-container [ngSwitch]="item.type">
+              <div *ngSwitchCase="1" class="message mb-5 d-flex">
+                <div class=" d-flex">
+                  <div class="text" >
+                    <div  class="d-flex mv-2">
+                      <div>
+                        <a target="_blank" *ngIf="item.fileType === 'image/png' || item.fileType === 'image/jpeg'" [href]="'http://localhost:5000/img/'+item.filePath"> <img  class="pb-3 rounded" width="200px" height="200px" [src]="'http://localhost:5000/img/' + item.filePath"></a>
+
+                     <video class="pb-3 rounded" *ngIf="item.fileType === 'video/mp4'" width="220px" height="220px" preload="metadata"  controls>
+            <source [src]="'http://localhost:5000/api/messages/api/videos/'+item.filePath" type="video/mp4">
+          </video>
+          <a class="rounded" [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'"> <img width="200px" height="200px" src="assets\images\pdf.png" alt=""></a>
+
+          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"> <img width="200px" height="200px" src="assets\images\word.png" alt=""></a>
+
+          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/zip'">
+            <img width="200px" height="200px" src="assets\images\zip.png" alt="">
+          </a>
+
+          <!-- Dosya tipi text/plain ise -->
+          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'text/plain'">
+            <!-- Plain text dosyası için bir görsel veya simge kullanabilirsiniz -->
+            <img width="200px" height="200px" src="assets\images\txt-file.png" alt="">
+          </a>
+
+                        <p class="">
+                          <span *ngIf="item.text" class="mb-0 pb-0">{{item?.text}}</span>  <span class="mt-0 pt-0" style="font-weight: bolder">{{item?.senderUserName}}</span></p>
+                    </div>
+                      <div class="dropdown ms-3 d-flex align-items-start">
+                        <a  class="mt-1"> <i class="fas fa-reply text--dark-100"></i></a>
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton26" data-bs-toggle="dropdown" aria-expanded="false">
+                          <i class="fas fa-ellipsis-v text--dark-100"></i>
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton26">
+                          <li><a class="dropdown-item d-flex justify-content-between align-items-center text--dark-100 font-size--14" >Kopyala<i class="far fa-copy text--dark-100"></i></a></li>
+                          <li><a class="dropdown-item d-flex justify-content-between align-items-center text--dark-100 font-size--14" >Sil<i class="fas fa-trash-alt text--dark-100"></i></a></li>
+                        </ul>
+                      </div>
+                    </div>
+                    <span class="time">{{item.dateSent | date:'HH:mm'}}</span>
+                  </div>
+                </div>
+              </div>
+              <!-- message end -->
+              <div *ngSwitchCase="0" class="message right mb-5 d-flex justify-content-end">
+                <div  class=" d-flex">
+                 <div class="text">
+                   <div class="d-flex">
+                     <p *ngIf="item.text">{{item.text}}</p>
+                     <a target="_blank" *ngIf="item.fileType === 'image/png' || item.fileType === 'image/jpeg'" [href]="'http://localhost:5000/img/'+item.filePath"> <img  class="pb-3 rounded" width="200px" height="200px" [src]="'http://localhost:5000/img/' + item.filePath"></a>
+
+                     <video class="pb-3 rounded" *ngIf="item.fileType === 'video/mp4'" width="220px" height="220px" preload="metadata"  controls>
+            <source [src]="'http://localhost:5000/api/messages/api/videos/'+item.filePath" type="video/mp4">
+          </video>
+          <a class="rounded" [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'"> <img width="200px" height="200px" src="assets\images\pdf.png" alt=""></a>
+
+          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"> <img width="200px" height="200px" src="assets\images\word.png" alt=""></a>
+
+          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/zip'">
+            <img width="200px" height="200px" src="assets\images\zip.png" alt="">
+          </a>
+
+          <!-- Dosya tipi text/plain ise -->
+          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'text/plain'">
+            <!-- Plain text dosyası için bir görsel veya simge kullanabilirsiniz -->
+            <img width="200px" height="200px" src="assets\images\txt-file.png" alt="">
+          </a>
+
+          <!-- Dosya tipi officedocument.wordprocessingml.document ise -->
+          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'officedocument.wordprocessingml.document'">
+            <!-- Word dosyası için bir görsel veya simge kullanabilirsiniz -->
+            <img width="200px" height="200px" src="assets\images\word.png" alt="">
+          </a>
+                     <div class="dropdown ms-3 d-flex align-items-start">
+                      <a  class="mt-1"> <i class="fas fa-reply text--dark-100"></i></a>
+                       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton28" data-bs-toggle="dropdown" aria-expanded="false">
+                         <i class="fas fa-ellipsis-v text--dark-100"></i>
+                       </button>
+                       <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton28">
+                         <li><a class="dropdown-item d-flex justify-content-between align-items-center text--dark-100 font-size--14" >copy<i class="far fa-copy text--dark-100"></i></a></li>
+                         <li><a class="dropdown-item d-flex justify-content-between align-items-center text--dark-100 font-size--14" >remove<i class="fas fa-trash-alt text--dark-100"></i></a></li>
+                       </ul>
+                     </div>
+                   </div>
+                   <span class="time">{{item.dateSent | date:'HH:mm'}}</span>
+                 </div>
+                </div>
+              </div>
+            </ng-container>
+            </div>
+              <!-- message end -->
+            </div>
+            <!-- message content end -->
+            <div class="chat-footer position-fixed bottom-0 bg--light-gray-200">
+              <form action="#" class="form">
+                <div class="d-flex">
+                  <div class="dropdown d-flex">
+                    <button class="btn p-0 btn-secondary dropdown-toggle ms-2" type="button" id="dropdownMenuButton33" data-bs-toggle="dropdown" aria-expanded="false">
+                     <i class="fas fa-plus-circle text--dark-100 font-size--18 ms-3"></i>
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton33">
+                      <li class="input-file dropdown-item">
+                        <label id="files3" class="btn text-decoration-none d-flex justify-content-between align-items-center font-size--14 p-0"><i class="far fa-file-archive me-2"></i>Dosya Yükle
+                        <input name="fileInput" (change)="onfileSelectedToGroup($event)"  type="file" class="form-control-file d-none"></label>
+                      </li>
+                      <li>
+                        <a class="dropdown-item d-flex justify-content-between align-items-center font-size--14" ><i class="far fa-smile-beam me-2"></i>emoji</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="input-group">
+                    <textarea name="myGroupTextarea"  #myGroupTextarea class="form-control border-0 rounded p-2 mx-2" id="FormControlTextarea2"  rows="1"></textarea>
+
+
+                  </div>
+                  <button (click)="sendMessagetoGroup()" type="submit" class="btn bg--primary submit-btn text-white me-2"><i class="fas fa-paper-plane"></i></button>
+                </div>
+              </form>
+            </div>
+            <!-- message footer end -->
+            <div class="right-sidebar border-start border--gray">
+              <div class="profile-info d-flex justify-content-center py-3 mb-2 border-bottom border--gray sticky-top bg--white">
+                <div class="text-center" *ngFor="let g of group">
+                  <img [src]="g?.groupImg ? 'http://localhost:5000/img/' + g?.groupImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="hw-100 rounded-circle mb-1 img-fluid">
+                  <h2>{{g.groupName}}</h2>
+                </div>
+                <div class="close-icon user-profile-hide position-absolute"><i class="fas fa-times"></i></div>
+              </div>
+              <div class="description text-center pb-3 px-3">
+                <p>Grup Bilgi</p>
+              </div>
+              <div class="user-profile-accordion accordion px-3" id="accordionExample10">
+                <div class="accordion-item border border--gray mb-3">
+                  <h2 class="accordion-header" id="heading7">
+                    <button class="accordion-button bg--light-gray-200 p-3 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#collapse7" aria-expanded="true" aria-controls="collapse7"><i class="far fa-user me-2"></i>Katılımcılar</button>
+                  </h2>
+                  <div id="collapse7" class="accordion-collapse collapse show border-0" aria-labelledby="heading7" data-bs-parent="#accordionExample10">
+                    <div class="card-body bg--white remove-space--bottom">
+                      <div class="mb-4 d-flex" *ngFor="let item of groupInfo">
+                        <img style="height: 20%; width: 20%;" [src]="item?.userImg ? 'http://localhost:5000/img/' + item?.userImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class=" rounded-circle mb-1 p-1 img-fluid">
+                        <div class="d-flex flex-column">
+                          <h3 class="m-0 p-0">{{item?.fullName}}</h3>
+                          <p class="m-0 p-0">{{item?.bio}}</p>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+         <!-- =========== Chats End ============ -->
+    </div>
+
+</body>
+

@@ -1,0 +1,11 @@
+.btn-secondary {
+  color: #fff !important;
+  background-color: #fff !important;
+  border: none !important;
+}
+
+.text {
+  word-wrap: break-word;
+  word-break: break-all;
+}
+/*# sourceMappingURL=chatpage.component.css.map */
