@@ -11,7 +11,7 @@ import { UserForChatInfo } from '../models/UserForChatInfoDto';
   providedIn: 'root'
 })
 export class UserService {
-  baseUrl = 'http://localhost:5000/api/user';
+  baseUrl = 'https://projeali.online/api/user';
   jwtHelper = new JwtHelperService();
   decodedToken: any;
 
@@ -45,7 +45,7 @@ export class UserService {
     return this.http.put<any>(this.baseUrl + "/" +userid, formData);
   }
 
-  
+
 
 
 }

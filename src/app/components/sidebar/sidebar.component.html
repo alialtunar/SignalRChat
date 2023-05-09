@@ -2,7 +2,7 @@
 <div class="tab_content">
   <div class="tab_pane chats-tab active">
     <div class="sidebar-header p-3">
-      <h1 class="mb-3">chats</h1>
+      <h1 class="mb-3">Mesajlar</h1>
       <div class="search position-relative mb-3">
         <form action="#" class="form search-form-1">
           <input type="text" placeholder="search" class="w-100"/>
@@ -20,7 +20,7 @@
             <a (click)="selectUser(item)" class="nav-link d-flex justify-content-between p-3" >
               <div class="d-flex">
                 <div class="position-relative">
-                  <img [src]="item?.userImg ? 'http://localhost:5000/img/' + item?.userImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="rounded-circle me-3 hw-40 img-fluid">
+                  <img [src]="item?.userImg ? 'https://projeali.online/wwwroot/img/' + item?.userImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="rounded-circle me-3 hw-40 img-fluid">
 
                   <span [class.away]="!isActiveUser(item.contactName)" class="status online position-absolute"></span>
                 </div>
@@ -39,7 +39,7 @@
             <a (click)="choseGroup(item)" class="nav-link d-flex justify-content-between p-3" >
               <div class="d-flex">
                 <div class="position-relative">
-                  <img [src]="item?.groupImg ? 'http://localhost:5000/img/' + item?.groupImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="rounded-circle me-3 hw-40 img-fluid">
+                  <img [src]="item?.groupImg ? 'https://projeali.online/wwwroot/img/' + item?.groupImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="rounded-circle me-3 hw-40 img-fluid">
                   <span class="status away position-absolute"></span>
                 </div>
                 <div class="chat-content">
@@ -69,7 +69,7 @@
     <div class="p-3">
       <div class="d-flex justify-content-center position-relative mb-2">
         <div class="text-center">
-          <img [src]="user?.userImg ? 'http://localhost:5000/img/' + user?.userImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="hw-100 rounded-circle mb-1 img-fluid">
+          <img [src]="user?.userImg ? 'https://projeali.online/wwwroot/img/' + user?.userImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="hw-100 rounded-circle mb-1 img-fluid">
 
           <h2>{{user?.userName}}</h2>
           <span class="status online position-relative">Online</span>
@@ -248,7 +248,7 @@
     <div class="p-3">
       <div class="d-flex justify-content-center position-relative mb-2">
         <div class="text-center">
-          <img [src]="user?.userImg ? 'http://localhost:5000/img/' + user?.userImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="hw-100 rounded-circle mb-1 img-fluid">
+          <img [src]="user?.userImg ? 'https://projeali.online/wwwroot/img/' + user?.userImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="hw-100 rounded-circle mb-1 img-fluid">
           <h2>{{user?.fullName}}</h2>
           <div class="dropdown user-chat-nav">
             <button class="btn dropdown-toggle text--dark-100" type="button" id="dropdownMenuButton7" data-bs-toggle="dropdown" aria-expanded="false">active<i class="fas fa-chevron-down ms-2"></i>

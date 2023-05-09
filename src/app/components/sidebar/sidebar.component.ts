@@ -12,6 +12,7 @@ import { GroupService } from 'src/app/services/group.service';
 import { MessageService } from 'src/app/services/message.service';
 import { UserService } from 'src/app/services/user.service';
 import { ChatService } from '../../services/hubservice.service';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -47,10 +48,12 @@ export class SidebarComponent implements OnInit {
   userImg:File;
   @Input() onlineUser: string[] = [];
   @Output() onlineUserChange = new EventEmitter<string[]>();
+  liElements!: NodeListOf<Element>;
+  itemElements!: NodeListOf<Element>;
 
 
 
-  constructor(private userService: UserService,private messageService:MessageService,public authservice:AuthService,private groupService:GroupService,private chatService:ChatService) { }
+  constructor(private userService: UserService,private messageService:MessageService,public authservice:AuthService,private groupService:GroupService,private chatService:ChatService,private route: Router) { }
 
   ngOnInit() {
     const userid=parseInt(this.senderid);
@@ -95,7 +98,30 @@ export class SidebarComponent implements OnInit {
       this.onlineUserChange.emit(this.onlineUser);
 
     });
+
+    this.liElements = document.querySelectorAll(".navigation ul li");
+    this.itemElements = document.querySelectorAll(".tab_pane");
+    this.liElements.forEach(li => {
+      li.addEventListener("click", () => {
+        this.liElements.forEach(el => {
+          el.classList.remove("active");
+        });
+        li.classList.add("active");
+        const liValue = li.getAttribute("data-li");
+        this.itemElements.forEach(el => {
+          el.setAttribute("style", "display: none");
+        });
+        const itemElement = document.querySelector("." + liValue);
+        if (itemElement) {
+          itemElement.setAttribute("style", "display: block");
+        }
+      });
+    });
   }
+
+
+
+
 
   selectUser(messsage: ConversationDto) {
     this.userService.getUserForChat(messsage.contactName).subscribe(user => {
@@ -242,7 +268,7 @@ export class SidebarComponent implements OnInit {
   onSubmit() {
     this.userid=parseInt(this.senderid);
     this.userService.updateUser(this.userid, this.userForUpdateDTO,this.userImg).subscribe(() => {
-    location.reload();
+      window.location.href = '/';
     }, error => {
      console.log(error);
     });
@@ -258,5 +284,6 @@ export class SidebarComponent implements OnInit {
 
       return this.onlineUser.includes(username);
     }
+
 
 }

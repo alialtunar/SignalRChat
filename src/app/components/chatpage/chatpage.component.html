@@ -3,7 +3,7 @@
     <div class="layout d-lg-flex">
        <!-- =========== Navigation Start ============ -->
         <div class="navigation z-index1 pt-lg-4 d-flex flex-lg-column justify-content-lg-between text-center bg--primary">
-          <a class="logo d-none d-lg-block" href="index.html">
+          <a class="logo d-none d-lg-block" routerLink="/chatpage">
            <img src="assets/images/logo.svg" alt="" class="svg img-fluid">
           </a>
         <!-- Logo End -->
@@ -33,14 +33,10 @@
                 <i class="fas fa-cog"></i>
               </a>
             </li>
-            <li>
-              <a onclick="visitPage()" class="nav-link d-lg-none" data-tooltip="logout" data-placement="top">
-                  <i class="fas fa-sign-out-alt"></i>
-              </a>
-            </li>
+
           </ul>
           <div class="m-0 d-none d-lg-block">
-            <a click="visitPage()" class="nav-link m-0" data-tooltip="logout" data-placement="top">
+            <a (click)="logout()" class="nav-link m-0" data-tooltip="logout" data-placement="top">
               <i class="fas fa-sign-out-alt"></i>
             </a>
           </div>
@@ -57,15 +53,15 @@
          <!-- =========== Sidebar End ============ -->
 
         <!-- =========== Chats Start ============ -->
-        <div id="chat-content"  class="chats tab-content w-100">
+        <div style="position: relative;" id="chat-content"  class="chats tab-content w-100">
 
           <!-- chat body end -->
-          <div id="chatUser" class="chat-body tab-pane fade ">
+          <div  id="chatUser" class="chat-body tab-pane fade ">
             <div class="chat-header d-flex  justify-content-between align-items-center border-bottom border--gray p-4 sticky-top bg--white">
               <div class="media d-flex align-items-center">
                 <div  class="close-icon user-chat-remove d-lg-none me-3"><i class="fas fa-arrow-left font-size--14 text--dark-100"></i></div>
                 <div class="position-relative">
-                  <img [src]="userForChat?.userImg ? 'http://localhost:5000/img/' + userForChat?.userImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="rounded-circle me-3 hw-40">
+                  <img [src]="userForChat?.userImg ? 'https://projeali.online/wwwroot/img/' + userForChat?.userImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="rounded-circle me-3 hw-40">
                   <span [class.away]="!isActiveUser(userForChat?.userName)" class="status online"></span>
                 </div>
                   <div class="media-body">
@@ -127,27 +123,27 @@
                   <div class="text" >
                     <div  class="d-flex">
                       <p class="pb-1" *ngIf="item.text">{{item.text}}</p>
-                      <a target="_blank" *ngIf="item.fileType === 'image/png' || item.fileType === 'image/jpeg'" [href]="'http://localhost:5000/img/'+item.filePath"> <img  class="pb-3" width="200px" height="200px" [src]="'http://localhost:5000/img/' + item.filePath"></a>
+                      <a target="_blank" *ngIf="item.fileType === 'image/png' || item.fileType === 'image/jpeg'" [href]="'https://projeali.online/wwwroot/img/'+item.filePath"> <img  class="pb-3" width="200px" height="200px" [src]="'https://projeali.online/wwwroot/img/' + item.filePath"></a>
 
                      <video class="pb-3" *ngIf="item.fileType === 'video/mp4'" width="220px" height="220px" preload="metadata"  controls>
-            <source [src]="'http://localhost:5000/api/messages/api/videos/'+item.filePath" type="video/mp4">
+            <source [src]="'https://projeali.online/api/messages/api/videos/'+item.filePath" type="video/mp4">
           </video>
 
 
-          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'"> <img width="200px" height="200px" src="assets\images\pdf.png" alt=""></a>
+          <a [href]="'https://projeali.online/wwwroot/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'"> <img width="200px" height="200px" src="assets\images\pdf.png" alt=""></a>
 
-          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/zip'">
+          <a [href]="'https://projeali.online/wwwroot/img/'+item.filePath" *ngIf="item.fileType === 'application/zip'">
             <img width="200px" height="200px" src="assets\images\zip.png" alt="">
           </a>
 
           <!-- Dosya tipi text/plain ise -->
-          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'text/plain'">
+          <a [href]="'https://projeali.online/wwwroot/img/'+item.filePath" *ngIf="item.fileType === 'text/plain'">
             <!-- Plain text dosyası için bir görsel veya simge kullanabilirsiniz -->
             <img width="200px" height="200px" src="assets\images\txt-file.png" alt="">
           </a>
 
           <!-- Dosya tipi officedocument.wordprocessingml.document ise -->
-          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'">
+          <a [href]="'https://projeali.online/wwwroot/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'">
             <!-- Word dosyası için bir görsel veya simge kullanabilirsiniz -->
             <img width="200px" height="200px" src="assets\images\word.png" alt="">
           </a>
@@ -174,21 +170,21 @@
                  <div class="text">
                    <div class="d-flex">
                      <p class="" *ngIf="item.text">{{item.text}}</p>
-                   <a target="_blank" *ngIf="item.fileType === 'image/png' || item.fileType === 'image/jpeg'" [href]="'http://localhost:5000/img/'+item.filePath"> <img  class="pb-3 rounded" width="200px" height="200px" [src]="'http://localhost:5000/img/' + item.filePath"></a>
+                   <a target="_blank" *ngIf="item.fileType === 'image/png' || item.fileType === 'image/jpeg'" [href]="'https://projeali.online/wwwroot/img/'+item.filePath"> <img  class="pb-3 rounded" width="200px" height="200px" [src]="'https://projeali.online/wwwroot/img/' + item.filePath"></a>
 
                      <video class="pb-3 rounded" *ngIf="item.fileType === 'video/mp4'" width="220px" height="220px" preload="metadata"  controls>
-            <source [src]="'http://localhost:5000/api/messages/api/videos/'+item.filePath" type="video/mp4">
+            <source [src]="'https://projeali.online/api/messages/api/videos/'+item.filePath" type="video/mp4">
           </video>
-          <a class="rounded" [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'"> <img width="200px" height="200px" src="assets\images\pdf.png" alt=""></a>
+          <a class="rounded" [href]="'https://projeali.online/wwwroot/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'"> <img width="200px" height="200px" src="assets\images\pdf.png" alt=""></a>
 
-          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"> <img width="200px" height="200px" src="assets\images\word.png" alt=""></a>
+          <a [href]="'https://projeali.online/wwwroot/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"> <img width="200px" height="200px" src="assets\images\word.png" alt=""></a>
 
-          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/zip'">
+          <a [href]="'https://projeali.online/wwwroot/img/'+item.filePath" *ngIf="item.fileType === 'application/zip'">
             <img width="200px" height="200px" src="assets\images\zip.png" alt="">
           </a>
 
           <!-- Dosya tipi text/plain ise -->
-          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'text/plain'">
+          <a [href]="'https://projeali.online/wwwroot/img/'+item.filePath" *ngIf="item.fileType === 'text/plain'">
             <!-- Plain text dosyası için bir görsel veya simge kullanabilirsiniz -->
             <img width="200px" height="200px" src="assets\images\txt-file.png" alt="">
           </a>
@@ -210,11 +206,12 @@
               </div>
             </ng-container>
             </div>
-            <div *ngIf="isWriting(userForChat?.userName)" class=" yaziyor-animasyon">
-              <span class="nokta">.</span>
-              <span class="nokta">.</span>
-              <span class="nokta">.</span>
-            </div>
+
+              <div class="animation" [style.visibility]="isWriting(userForChat?.userName) ? 'visible' : 'hidden'" >
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+              </div>
             </div>
             <!-- message content end -->
             <div class="chat-footer position-fixed bottom-0 bg--light-gray-200">
@@ -248,7 +245,7 @@
             <div class="right-sidebar border-start border--gray">
               <div class="profile-info d-flex justify-content-center py-3 mb-2 border-bottom border--gray sticky-top bg--white">
                 <div class="text-center">
-                  <img [src]="otheruser?.userImg ? 'http://localhost:5000/img/' + userForChat?.userImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="hw-100 rounded-circle mb-1 img-fluid">
+                  <img [src]="otheruser?.userImg ? 'https://projeali.online/wwwroot/img/' + userForChat?.userImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="hw-100 rounded-circle mb-1 img-fluid">
                   <h2>{{otheruser?.fullName}}</h2>
                   <span [class.away]="!isActiveUser(otheruser?.userName)" class="status online position-relative"><p *ngIf="otheruser?.isActive">Aktif</p>
                     <p *ngIf="!isActiveUser(otheruser?.userName)">Aktif Değil</p></span>
@@ -294,7 +291,7 @@
               <div *ngFor="let g of group" class="media d-flex align-items-center">
                 <div (click)="closeChat()" class="close-icon user-chat-remove d-lg-none me-3"><i class="fas fa-arrow-left font-size--14 text--dark-100"></i></div>
                 <div class="position-relative">
-                  <img [src]="g?.groupImg ? 'http://localhost:5000/img/' + g?.groupImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="rounded-circle me-3 hw-40">
+                  <img [src]="g?.groupImg ? 'https://projeali.online/wwwroot/img/' + g?.groupImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="rounded-circle me-3 hw-40">
                   <span class="status away online"></span>
                 </div>
                   <div class="media-body">
@@ -354,21 +351,21 @@
                   <div class="text" >
                     <div  class="d-flex mv-2">
                       <div>
-                        <a target="_blank" *ngIf="item.fileType === 'image/png' || item.fileType === 'image/jpeg'" [href]="'http://localhost:5000/img/'+item.filePath"> <img  class="pb-3 rounded" width="200px" height="200px" [src]="'http://localhost:5000/img/' + item.filePath"></a>
+                        <a target="_blank" *ngIf="item.fileType === 'image/png' || item.fileType === 'image/jpeg'" [href]="'https://projeali.online/wwwroot/img/'+item.filePath"> <img  class="pb-3 rounded" width="200px" height="200px" [src]="'https://projeali.online/wwwroot/img/' + item.filePath"></a>
 
                      <video class="pb-3 rounded" *ngIf="item.fileType === 'video/mp4'" width="220px" height="220px" preload="metadata"  controls>
-            <source [src]="'http://localhost:5000/api/messages/api/videos/'+item.filePath" type="video/mp4">
+            <source [src]="'https://projeali.online/api/messages/api/videos/'+item.filePath" type="video/mp4">
           </video>
-          <a class="rounded" [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'"> <img width="200px" height="200px" src="assets\images\pdf.png" alt=""></a>
+          <a class="rounded" [href]="'https://projeali.online/wwwroot/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.presentationml.presentation' || item.fileType === 'application/pdf' "> <img width="200px" height="200px" src="assets\images\pdf.png" alt=""></a>
 
-          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"> <img width="200px" height="200px" src="assets\images\word.png" alt=""></a>
+          <a [href]="'https://projeali.online/wwwroot/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"> <img width="200px" height="200px" src="assets\images\word.png" alt=""></a>
 
-          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/zip'">
+          <a [href]="'https://projeali.online/wwwroot/img/'+item.filePath" *ngIf="item.fileType === 'application/zip'">
             <img width="200px" height="200px" src="assets\images\zip.png" alt="">
           </a>
 
           <!-- Dosya tipi text/plain ise -->
-          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'text/plain'">
+          <a [href]="'https://projeali.online/wwwroot/img/'+item.filePath" *ngIf="item.fileType === 'text/plain'">
             <!-- Plain text dosyası için bir görsel veya simge kullanabilirsiniz -->
             <img width="200px" height="200px" src="assets\images\txt-file.png" alt="">
           </a>
@@ -397,27 +394,27 @@
                  <div class="text">
                    <div class="d-flex">
                      <p *ngIf="item.text">{{item.text}}</p>
-                     <a target="_blank" *ngIf="item.fileType === 'image/png' || item.fileType === 'image/jpeg'" [href]="'http://localhost:5000/img/'+item.filePath"> <img  class="pb-3 rounded" width="200px" height="200px" [src]="'http://localhost:5000/img/' + item.filePath"></a>
+                     <a target="_blank" *ngIf="item.fileType === 'image/png' || item.fileType === 'image/jpeg'" [href]="'https://projeali.online/wwwroot/img/'+item.filePath"> <img  class="pb-3 rounded" width="200px" height="200px" [src]="'https://projeali.online/wwwroot/img/' + item.filePath"></a>
 
                      <video class="pb-3 rounded" *ngIf="item.fileType === 'video/mp4'" width="220px" height="220px" preload="metadata"  controls>
-            <source [src]="'http://localhost:5000/api/messages/api/videos/'+item.filePath" type="video/mp4">
+            <source [src]="'https://projeali.online/api/messages/api/videos/'+item.filePath" type="video/mp4">
           </video>
-          <a class="rounded" [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'"> <img width="200px" height="200px" src="assets\images\pdf.png" alt=""></a>
+          <a class="rounded" [href]="'https://projeali.online/wwwroot/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.presentationml.presentation'"> <img width="200px" height="200px" src="assets\images\pdf.png" alt=""></a>
 
-          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"> <img width="200px" height="200px" src="assets\images\word.png" alt=""></a>
+          <a [href]="'https://projeali.online/wwwroot/img/'+item.filePath" *ngIf="item.fileType === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'"> <img width="200px" height="200px" src="assets\images\word.png" alt=""></a>
 
-          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'application/zip'">
+          <a [href]="'https://projeali.online/wwwroot/img/'+item.filePath" *ngIf="item.fileType === 'application/zip'">
             <img width="200px" height="200px" src="assets\images\zip.png" alt="">
           </a>
 
           <!-- Dosya tipi text/plain ise -->
-          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'text/plain'">
+          <a [href]="'https://projeali.online/wwwroot/img/'+item.filePath" *ngIf="item.fileType === 'text/plain'">
             <!-- Plain text dosyası için bir görsel veya simge kullanabilirsiniz -->
             <img width="200px" height="200px" src="assets\images\txt-file.png" alt="">
           </a>
 
           <!-- Dosya tipi officedocument.wordprocessingml.document ise -->
-          <a [href]="'http://localhost:5000/img/'+item.filePath" *ngIf="item.fileType === 'officedocument.wordprocessingml.document'">
+          <a [href]="'https://projeali.online/wwwroot/img/'+item.filePath" *ngIf="item.fileType === 'officedocument.wordprocessingml.document'">
             <!-- Word dosyası için bir görsel veya simge kullanabilirsiniz -->
             <img width="200px" height="200px" src="assets\images\word.png" alt="">
           </a>
@@ -471,7 +468,7 @@
             <div class="right-sidebar border-start border--gray">
               <div class="profile-info d-flex justify-content-center py-3 mb-2 border-bottom border--gray sticky-top bg--white">
                 <div class="text-center" *ngFor="let g of group">
-                  <img [src]="g?.groupImg ? 'http://localhost:5000/img/' + g?.groupImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="hw-100 rounded-circle mb-1 img-fluid">
+                  <img [src]="g?.groupImg ? 'https://projeali.online/wwwroot/img/' + g?.groupImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class="hw-100 rounded-circle mb-1 img-fluid">
                   <h2>{{g.groupName}}</h2>
                 </div>
                 <div class="close-icon user-profile-hide position-absolute"><i class="fas fa-times"></i></div>
@@ -487,7 +484,7 @@
                   <div id="collapse7" class="accordion-collapse collapse show border-0" aria-labelledby="heading7" data-bs-parent="#accordionExample10">
                     <div class="card-body bg--white remove-space--bottom">
                       <div class="mb-4 d-flex" *ngFor="let item of groupInfo">
-                        <img style="height: 20%; width: 20%;" [src]="item?.userImg ? 'http://localhost:5000/img/' + item?.userImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class=" rounded-circle mb-1 p-1 img-fluid">
+                        <img style="height: 20%; width: 20%;" [src]="item?.userImg ? 'https://projeali.online/wwwroot/img/' + item?.userImg : 'https://cdn-icons-png.flaticon.com/512/149/149071.png'" alt="" class=" rounded-circle mb-1 p-1 img-fluid">
                         <div class="d-flex flex-column">
                           <h3 class="m-0 p-0">{{item?.fullName}}</h3>
                           <p class="m-0 p-0">{{item?.bio}}</p>

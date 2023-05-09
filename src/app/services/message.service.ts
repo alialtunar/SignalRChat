@@ -12,7 +12,7 @@ import { ChatGroupDto} from '../models/ChatGroupDto';
   providedIn: 'root'
 })
 export class MessageService {
-  baseUrl = 'http://localhost:5000/api/messages/';
+  baseUrl = 'https://projeali.online/api/messages/';
   jwtHelper = new JwtHelperService();
   decodedToken: any;
 

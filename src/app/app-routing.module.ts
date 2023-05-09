@@ -3,12 +3,17 @@ import { RouterModule, Routes } from '@angular/router';
 import { ChatpageComponent } from './components/chatpage/chatpage.component';
 import { LoginComponent } from './components/login/login.component';
 import { SidebarComponent } from './components/sidebar/sidebar.component';
+import { RegisterComponent } from './components/register/register.component';
+import { AuthGuard } from './guards/auth-guard';
+
 
 const routes: Routes = [
- { path: '\chatpage', component: ChatpageComponent },
-   {path:'',component:LoginComponent},
-   {path:'\sidebar',component:SidebarComponent}
+  { path: 'chatpage', component: ChatpageComponent,canActivate: [AuthGuard] },
+  { path: '', component: LoginComponent },
+  { path: 'sidebar', component: SidebarComponent },
+  { path: 'register', component: RegisterComponent }
 ];
+
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

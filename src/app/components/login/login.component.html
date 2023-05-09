@@ -1,17 +1,41 @@
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-5">
-      <form #form="ngForm" (ngSubmit)="login()">
-        <div class="mb-3">
-          <label for="exampleInputEmail1" class="form-label">Kullanıcı adı</label>
-          <input type="text" #username="ngModel" [(ngModel)]="model.UserName" name="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-        </div>
-        <div class="mb-3">
-          <label for="exampleInputPassword1" class="form-label">Şifre</label>
-          <input type="password" class="form-control" id="exampleInputPassword1" name="password" #password="ngModel" [(ngModel)]="model.Password">
-        </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
-      </form>
-    </div>
+
+<div class="container-fluid">
+  <div class="row no-gutter">
+      <!-- The image half -->
+      <div style="display: flex; justify-content: center; align-items: center;" class="col-md-6 d-none d-md-flex bg-image">
+        <img  width="50%" height="50%" src="../../../assets/images/key.png" alt="">
+      </div>
+
+
+      <!-- The content half -->
+      <div class="col-md-6 bg-light">
+          <div class="login d-flex align-items-center py-5">
+
+              <!-- Demo content-->
+              <div class="container">
+                  <div class="row">
+                      <div class="col-lg-10 col-xl-7 mx-auto">
+                          <h3 class="display-4">Giriş Yap</h3>
+                          <form #form="ngForm" (ngSubmit)="login()">
+                            <div class="mb-3">
+                              <label for="exampleInputEmail1" class="form-label">Kullanıcı adı</label>
+                              <input type="text" #username="ngModel" [(ngModel)]="model.UserName" name="username" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                            </div>
+                            <div class="mb-1">
+                              <label for="exampleInputPassword1" class="form-label">Şifre</label>
+                              <input type="password" class="form-control" id="exampleInputPassword1" name="password" #password="ngModel" [(ngModel)]="model.Password">
+                            </div>
+                            <div style="display: flex; flex-direction: column;">
+                            <a style="color: rgb(61, 57, 57)!important;" class="fs-6 mb-2" routerLink="/register">Kayıt Ol</a>
+                            <button style="width: 31%;" type="submit" class="btn btn-primary">Giriş Yap</button>
+                          </div>
+                          </form>
+                      </div>
+                  </div>
+              </div><!-- End -->
+
+          </div>
+      </div><!-- End -->
+
   </div>
 </div>

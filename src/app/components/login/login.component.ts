@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/services/auth.service';
+declare let alertify:any;
 
 @Component({
   selector: 'app-login',
@@ -16,18 +17,21 @@ export class LoginComponent implements OnInit {
 
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if(localStorage.getItem("token")){
+      this.route.navigateByUrl("/chatpage")
+    }
+  }
 
   login() {
     console.log(this.model);
     this.authService.login(this.model).subscribe(
       () => {
-        console.log('Giriş Başarılı');
-
+        alertify.success('Giriş Başarılı');
         this.route.navigate(['/chatpage']);
       },
       (error) => {
-        console.log('Giriş Başarısız');
+        alertify.error('Giriş Başarısız');
       }
     );
   }

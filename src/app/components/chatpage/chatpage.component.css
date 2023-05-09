@@ -8,4 +8,115 @@
   word-wrap: break-word;
   word-break: break-all;
 }
+
+.dropdown-menu[style] {
+  right: 0% !important;
+}
+
+.cursor {
+  cursor: pointer;
+}
+
+.yaziyor-animasyon {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  right: 38px;
+  font-size: 100px;
+}
+
+.nokta {
+  display: inline-block;
+  font-size: 100%;
+  -webkit-animation: yaziyorAnimasyon 1s infinite;
+          animation: yaziyorAnimasyon 1s infinite;
+}
+
+@-webkit-keyframes yaziyorAnimasyon {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes yaziyorAnimasyon {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.bg--primary {
+  background-color: #16a085;
+}
+
+.animation {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  position: absolute;
+  bottom: 12%;
+  left: 4%;
+  width: 100%;
+  -webkit-transform: translate(-4%, 80%);
+          transform: translate(-4%, 80%);
+}
+
+.dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin: 0 5px;
+  background-color: black;
+  border-radius: 50%;
+  -webkit-animation: moveUpDown 1.5s infinite ease-in-out;
+          animation: moveUpDown 1.5s infinite ease-in-out;
+}
+
+@-webkit-keyframes moveUpDown {
+  0% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+  50% {
+    -webkit-transform: translateY(-20px);
+            transform: translateY(-20px);
+  }
+  100% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+}
+
+@keyframes moveUpDown {
+  0% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+  50% {
+    -webkit-transform: translateY(-20px);
+            transform: translateY(-20px);
+  }
+  100% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+}
 /*# sourceMappingURL=chatpage.component.css.map */

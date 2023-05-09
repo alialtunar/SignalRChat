@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { ChatService } from '../../services/hubservice.service';
 
 import { User } from 'src/app/models/user';
@@ -11,6 +11,7 @@ import { UserService } from 'src/app/services/user.service';
 import { MessageService } from 'src/app/services/message.service';
 import { GroupService } from 'src/app/services/group.service';
 import { GroupUserDto } from 'src/app/models/GroupUserDto';
+import { Router } from '@angular/router';
 
 
 
@@ -48,7 +49,8 @@ export class ChatpageComponent implements OnInit {
   parentOnlineUser: string[] = [];
 
 
-  constructor(private chatService: ChatService, private authService: AuthService,private userService:UserService,private messageService:MessageService,private groupService:GroupService) {
+
+  constructor(private chatService: ChatService, private authService: AuthService,private userService:UserService,private messageService:MessageService,private groupService:GroupService,private cd: ChangeDetectorRef,private route: Router) {
 
    }
 
@@ -57,13 +59,11 @@ export class ChatpageComponent implements OnInit {
     this.chatService.receiveMessage().subscribe((data: any) => {
       const newMessage = { senderUserName: data.senderUserName, text: data.message, dateSent: data.DateSent, type: 1,filePath:data.filePath,fileType:data.fileType };
       this.parentOldMessage.push(newMessage);
-
       this.scrooldown();
     });
     this.chatService.receiveFile().subscribe(file => {
       const newMessage = { senderUserName: file.senderUserName, text:'', dateSent: file.dateSent, type: 1,filePath:file.filePath,fileType:file.fileType };
       this.parentOldMessage.push(newMessage);
-
       this.scrooldown();
 
     });
@@ -95,22 +95,25 @@ export class ChatpageComponent implements OnInit {
       });
 
       this.chatService.receiveWrite().subscribe((data: any) => {
-        if(this.writingUser.includes(data.senderUserName)){
+        // if(this.writingUser.indexOf(data.senderUserName) !== -1){
 
-        }
-        else{
-          this.writingUser.push(data.senderUserName);
-          console.log(this.writingUser);
-          console.log(data.senderUserName + "yazıyor");
-        }
+        // }
+        // else{
 
-      });
+        // }
+        this.writingUser.push(data.senderUserName);
+        console.log(this.writingUser);
+        console.log(this.writingUser.includes(this.userForChat?.userName));
+        this.cd.markForCheck();
+          });
 
       this.chatService.receiveOnFocusWrite().subscribe((data: any) => {
         const index = this.writingUser.indexOf(data.senderUserName); // silmek istediğiniz değerin dizideki indeksini bulun
         if (index !== -1) {
           this.writingUser.splice(index, 1); // splice() yöntemi ile diziden 1 elemanı (değeri) silin
         }
+        console.log(this.writingUser.includes(this.userForChat?.userName));
+        this.cd.markForCheck();
 
     });
 
@@ -120,9 +123,10 @@ export class ChatpageComponent implements OnInit {
   public sendMessage() {
     this.message=this.myTextareaRef.nativeElement.value;
     this.chatService.sendMessage(this.receiverUserName, this.message).then(()=>{
-      this.scrooldown();
       const myMessage = { text: this.message, dateSent: new Date(),type: 0, };
       this.parentOldMessage.push(myMessage);
+       this.scrooldown();
+      this.myTextareaRef.nativeElement.value="";
     });
 
 
@@ -159,9 +163,9 @@ export class ChatpageComponent implements OnInit {
     // Dosyayı yükleme metodunu çağır
     this.messageService.sendFileToGroup(this.groupName,this.senderUserName, this.fileToGroup).subscribe(
       (response) => {
-        this.scrooldown();
         const myGroupMessage = {text:'', dateSent: new Date(),type: 0,filePath:response.filePath,fileType:response.fileType };
         this.parentOldGroupMessage.push(myGroupMessage);
+        this.scrooldown();
 
       },
       (error) => {
@@ -230,10 +234,11 @@ export class ChatpageComponent implements OnInit {
     sendMessagetoGroup(): void {
       this.messageGroup=this.myGroupTextarea.nativeElement.value;
     this.chatService.addMessageToGroup(this.groupName, this.messageGroup).subscribe(() => {
-      this.scrooldown();
     });
     const myGroupMessage = { senderUserName: this.receiverUserName, text: this.messageGroup, dateSent: new Date(),type: 0 };
     this.parentOldGroupMessage.push(myGroupMessage);
+    this.scrooldown();
+    this.myGroupTextarea.nativeElement.value="";
     }
 
 
@@ -390,12 +395,18 @@ isWriting(userName:string): boolean {
 }
 
 isActiveUser(username: string): boolean {
-
   return this.parentOnlineUser.includes(username);
 }
 
+
 onOnlineUserChange(event: any[]) {
   this.parentOnlineUser = event;
+}
+
+logout(){
+  localStorage.removeItem("token");
+  this.route.navigate(['/']);
+
 }
    }
 

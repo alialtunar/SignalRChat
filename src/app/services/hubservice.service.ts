@@ -15,7 +15,7 @@ export class ChatService {
 
   constructor() {
     this.hubConnection = new signalR.HubConnectionBuilder()
-                            .withUrl('http://localhost:5000/ChatHub',{
+                            .withUrl('https://projeali.online/ChatHub',{
                               accessTokenFactory: () => localStorage.getItem('token')
                             })
                             .withAutomaticReconnect()

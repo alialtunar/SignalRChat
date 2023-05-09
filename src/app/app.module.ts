@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { AlertifyService } from './services/alertify.service';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -33,7 +34,7 @@ import { AuthGuard } from './guards/auth-guard';
     CommonModule,
     HttpClientModule
   ],
-  providers: [AuthGuard,{ provide: LocationStrategy, useClass: PathLocationStrategy },AuthService],
+  providers: [AuthGuard,{ provide: LocationStrategy, useClass: PathLocationStrategy },AuthService,AlertifyService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

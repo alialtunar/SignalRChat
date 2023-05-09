@@ -14,7 +14,7 @@ import { GroupUserDto } from '../models/GroupUserDto';
   providedIn: 'root'
 })
 export class GroupService {
-  baseUrl = 'http://localhost:5000/api/group/';
+  baseUrl = 'https://projeali.online/api/group/';
   jwtHelper = new JwtHelperService();
   decodedToken: any;
 
