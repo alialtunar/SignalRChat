@@ -6,8 +6,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,7 @@ using ServerApp.Data;
 using ServerApp.DTO;
 using ServerApp.models;
 using ServerApp.Models;
+
 //using ServerApp.Models;
 
 namespace ServerApp.Controllers
@@ -33,14 +35,16 @@ namespace ServerApp.Controllers
         private readonly RoleManager<Role> _roleManager;
 
         private readonly IUserRepository _userRepository; 
-
-        public UserController(UserManager<User> userManager,SignInManager<User> signInManager,IConfiguration configuration,RoleManager<Role> roleManager,IUserRepository userRepository)
+        
+        private readonly IMapper _mapper;
+        public UserController(UserManager<User> userManager,SignInManager<User> signInManager,IConfiguration configuration,RoleManager<Role> roleManager,IUserRepository userRepository,IMapper mapper)
         {
             _userManager=userManager;
             _signInManager = signInManager;
             _configuration = configuration;
             _roleManager = roleManager;
             _userRepository = userRepository;
+             _mapper = mapper;
            
         }
 
@@ -79,7 +83,83 @@ public async Task<IActionResult> GetUserForChat(string userName)
 }
 
 
+[HttpPut("{id}")]
+[Consumes("multipart/form-data")]
+public async Task<IActionResult> UpdateUser(int id, [FromForm] UserForUpdateDTO userForUpdateDTO, [FromForm] IFormFile profilImage)
+{
+    try
+    {
+        var user = await _userManager.FindByIdAsync(id.ToString());
 
+        if (user == null)
+        {
+            return NotFound();
+        }
+
+        if (profilImage != null && profilImage.Length > 0)
+{
+    var extension = Path.GetExtension(profilImage.FileName);
+    var randomName = $"{Guid.NewGuid()}{extension}";
+    var videoPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "img", randomName);
+
+    using (var Stream = new FileStream(videoPath, FileMode.Create))
+    {
+        await profilImage.CopyToAsync(Stream);
+    }
+
+    userForUpdateDTO.userImg = randomName;
+  
+}
+
+
+        _mapper.Map(userForUpdateDTO, user);
+
+        var result = await _userManager.UpdateAsync(user);
+
+        if (result.Succeeded)
+        {
+            return NoContent();
+        }
+
+        // If update fails, retrieve detailed error messages
+        var errors = result.Errors.Select(e => e.Description).ToList();
+
+        // Construct error message
+        var errorMessage = $"Update failed for user with ID {id}. Errors: {string.Join(",", errors)}";
+
+        return BadRequest(errorMessage);
+    }
+    catch (FileNotFoundException ex)
+    {
+        // Handle the exception when the file is not found
+        return BadRequest($"File not found. Exception message: {ex.Message}");
+    }
+    catch (DirectoryNotFoundException ex)
+    {
+        // Handle the exception when the directory is not found
+        return BadRequest($"Directory not found. Exception message: {ex.Message}");
+    }
+    catch (PathTooLongException ex)
+    {
+        // Handle the exception when the path is too long
+        return BadRequest($"Path too long. Exception message: {ex.Message}");
+    }
+    catch (IOException ex)
+    {
+        // Handle the exception when there is an I/O error
+        return StatusCode(StatusCodes.Status500InternalServerError, $"I/O error. Exception message: {ex.Message}");
+    }
+    catch (UnauthorizedAccessException ex)
+    {
+        // Handle the exception when access is denied
+        return BadRequest($"Access denied. Exception message: {ex.Message}");
+    }
+    catch (Exception ex)
+    {
+        // Handle other types of exceptions that were not anticipated
+        return StatusCode(StatusCodes.Status500InternalServerError, ex.Message);
+    }
+}
 
 
 

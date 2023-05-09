@@ -12,6 +12,8 @@ namespace ServerApp.models
      public string userImg { get; set; }
 
      public string Bio { get; set; }
+
+     public bool IsActive { get; set; }
     
     public ICollection<Message> ReceivedMessages { get; set; }
     public ICollection<GroupUser> GroupUsers { get; set; }

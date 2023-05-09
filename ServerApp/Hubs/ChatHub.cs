@@ -1,12 +1,17 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using ServerApp.Data;
+using ServerApp.DTO;
 using ServerApp.models;
 using ServerApp.Models;
 
@@ -14,11 +19,19 @@ using ServerApp.Models;
 public class ChatHub : Hub
 {
     private readonly ChatContext _dbContext;
-    private static readonly Dictionary<string, string> ConnectedUsers = new Dictionary<string, string>();
+    private readonly IGroupRepository _groupRepository;
+ 
+    private readonly UserManager<User> _userManager;
+    private readonly IMessageRepository _messageRepository;
+    public static readonly Dictionary<string, string> ConnectedUsers = new Dictionary<string, string>();
+    
 
-    public ChatHub(ChatContext dbContext)
+    public ChatHub(ChatContext dbContext,IGroupRepository groupRepository,IMessageRepository messageRepository,UserManager<User> userManager)
     {
         _dbContext = dbContext;
+        _groupRepository=groupRepository;
+        _messageRepository=messageRepository;
+         _userManager=userManager;
     }
 public override async Task OnConnectedAsync()
 {
@@ -26,9 +39,27 @@ public override async Task OnConnectedAsync()
     var userName = Context.User.Identity.Name;
     var connectionId = Context.ConnectionId;
 
-    if (!string.IsNullOrEmpty(userName))
+    var user = await _userManager.FindByNameAsync(userName);
+    if (user != null)
     {
-        // Add user to ConnectedUsers dictionary
+        user.IsActive = true;
+        await _userManager.UpdateAsync(user);
+
+    }
+
+   if (!string.IsNullOrEmpty(userName))
+    {
+        // Check if the userName already exists in ConnectedUsers dictionary
+        if (ConnectedUsers.ContainsValue(userName))
+        {
+            // Find the connectionId for the given userName
+            var existingConnectionId = ConnectedUsers.FirstOrDefault(x => x.Value == userName).Key;
+
+            // Remove the existing connectionId from ConnectedUsers dictionary
+            ConnectedUsers.Remove(existingConnectionId);
+        }
+
+        // Add user to ConnectedUsers dictionary with the new connectionId
         ConnectedUsers[connectionId] = userName;
     }
 
@@ -47,17 +78,33 @@ public override async Task OnConnectedAsync()
         await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
     }
 
+    var usernames = ConnectedUsers.Values.ToArray();
+     await Clients.All.SendAsync("ReceiveUsernames", usernames);
+
+    
     await base.OnConnectedAsync();
 }
-
 
 public override async Task OnDisconnectedAsync(Exception exception)
 {
     var connectionId = Context.ConnectionId;
+    var userName = Context.User.Identity.Name;
+
+    var user = await _userManager.FindByNameAsync(userName);
+    if (user != null)
+    {
+        user.IsActive = false;
+        await _userManager.UpdateAsync(user);
+
+    }
+
     if (ConnectedUsers.ContainsKey(connectionId))
     {
         ConnectedUsers.Remove(connectionId);
     }
+   var usernames = ConnectedUsers.Values.ToArray();
+     await Clients.All.SendAsync("ReceiveUsernames", usernames);
+
     await base.OnDisconnectedAsync(exception);
 }
 
@@ -66,7 +113,7 @@ public async Task SendMessage(string receiverUserName, string message)
     // Get sender's UserName and ConnectionId
     var senderUserName = Context.User.FindFirstValue(ClaimTypes.Name);
     var senderConnectionId = Context.ConnectionId;
-    var DateSent = DateTime.UtcNow;
+    var DateSent = DateTime.Now;
 
     // Get receiver's ConnectionId from ConnectedUsers dictionary
     var receiverConnectionId = ConnectedUsers.FirstOrDefault(x => x.Value == receiverUserName).Key;
@@ -89,7 +136,7 @@ public async Task SendMessage(string receiverUserName, string message)
     var newMessage = new Message
     {
         Text = message,
-        DateSent = DateTime.UtcNow,
+        DateSent = DateTime.Now,
         SenderId = sender.Id,
         ReceiverId = receiver.Id,
        
@@ -109,7 +156,6 @@ public async Task SendMessage(string receiverUserName, string message)
     // Send message to receiver
     await Clients.Client(receiverConnectionId).SendAsync("ReceiveMessage", senderUserName, message,DateSent);
 }
-
 
     public async Task GetMessages(string receiverUserName)
     {
@@ -166,76 +212,149 @@ public async Task SendMessage(string receiverUserName, string message)
         await Clients.OthersInGroup(groupName).SendAsync("ReceiveMessageGroup", user.FullName, message,dateSent);
     }
 
-public async Task JoinGroup(string groupName)
-{
-    var userId = Convert.ToInt32(Context.UserIdentifier);
-    var user = await _dbContext.Users.FindAsync(userId);
-
-    if (user == null)
+ public async Task JoinGroup(string groupName)
     {
-        return;
+        var userId = Convert.ToInt32(Context.UserIdentifier);
+        var user = await _dbContext.Users.FindAsync(userId);
+
+        if (user == null)
+        {
+            return;
+        }
+
+        var group = await _dbContext.Groups.SingleOrDefaultAsync(g => g.GroupName == groupName);
+
+        if (group == null)
+        {
+            return;
+        }
+
+        var existingGroupUser = await _dbContext.GroupUsers
+            .SingleOrDefaultAsync(gu => gu.GroupId == group.GroupId && gu.UserId == user.UserId);
+
+        if (existingGroupUser != null)
+        {
+            await Clients.Caller.SendAsync("ErrorMessage", "You are already a member of this group.");
+            return;
+        }
+
+        var groupUser = new GroupUser
+        {
+            Group = group,
+            User = user
+        };
+
+        _dbContext.GroupUsers.Add(groupUser);
+        await _dbContext.SaveChangesAsync();
+
+        await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+        await Clients.Group(groupName).SendAsync("UserJoined", user.FullName);
+
+        var groups = await _groupRepository.GetAllGroupsWithMembership(userId);
+        await Clients.Caller.SendAsync("UpdateGroupsList", groups);
+
+        // var lastMessagesByUser =  _messageRepository.GetLastMessagesForUser(userId);
+        // await Clients.Caller.SendAsync("LastMessagesByUser", lastMessagesByUser);
+
+        var lastMessagesInGroup = await _messageRepository.GetLastMessagesByUserInGroups(userId);
+        await Clients.Caller.SendAsync("LastMessagesInGroup", lastMessagesInGroup);
     }
-
-    var group = await _dbContext.Groups.SingleOrDefaultAsync(g => g.GroupName == groupName);
-
-    if (group == null)
-    {
-        return;
-    }
-
-    var existingGroupUser = await _dbContext.GroupUsers
-        .SingleOrDefaultAsync(gu => gu.GroupId == group.GroupId && gu.UserId == user.UserId);
-
-    if (existingGroupUser != null)
-    {
-        await Clients.Caller.SendAsync("ErrorMessage", "You are already a member of this group.");
-        return;
-    }
-
-    var groupUser = new GroupUser
-    {
-        Group = group,
-        User = user
-    };
-
-    _dbContext.GroupUsers.Add(groupUser);
-    await _dbContext.SaveChangesAsync();
-
-    await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
-    await Clients.Group(groupName).SendAsync("UserJoined", user.FullName);
-}
 
 public async Task LeaveGroup(string groupName)
 {
-    var user = await _dbContext.Users.FindAsync(Context.UserIdentifier);
+    var userId = Convert.ToInt32(Context.UserIdentifier);
+    var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
+    var group = await _dbContext.Groups.FirstOrDefaultAsync(g => g.GroupName == groupName);
 
-    if (user == null)
+    if (user != null && group != null)
     {
-        return;
+        var groupUser = await _dbContext.GroupUsers.FindAsync(group.GroupId, user.Id);
+
+        if (groupUser != null)
+        {
+            _dbContext.GroupUsers.Remove(groupUser);
+            await _dbContext.SaveChangesAsync();
+
+            await Clients.Group(groupName).SendAsync("UserLeftGroup", user.FullName);
+
+            // Grup bilgilerini yeniden yükle ve gönder
+            var groups = await _groupRepository.GetAllGroupsWithMembership(userId);
+            await Clients.Caller.SendAsync("UpdateGroupsList", groups);
+        }
     }
 
-    var group = await _dbContext.Groups.SingleOrDefaultAsync(g => g.GroupName == groupName);
+    //  var lastMessagesByUser =  _messageRepository.GetLastMessagesForUser(userId);
+    //     await Clients.Caller.SendAsync("LastMessagesByUser", lastMessagesByUser);
 
-    if (group == null)
-    {
-        return;
-    }
-
-    var groupUser = await _dbContext.GroupUsers
-        .SingleOrDefaultAsync(gu => gu.GroupId == group.GroupId && gu.UserId == user.UserId);
-
-    if (groupUser == null)
-    {
-        return;
-    }
-
-    _dbContext.GroupUsers.Remove(groupUser);
-    await _dbContext.SaveChangesAsync();
-
-    await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupName);
-    await Clients.Group(groupName).SendAsync("UserLeft", user.FullName);
+        var lastMessagesInGroup = await _messageRepository.GetLastMessagesByUserInGroups(userId);
+        await Clients.Caller.SendAsync("LastMessagesInGroup", lastMessagesInGroup);
 }
 
+public async Task<IEnumerable<GroupWithMembershipDto>> GetAllGroupsWithMembership(int userId)
+    {
+        var groups = await _groupRepository.GetAllGroupsWithMembership(userId);
+        return groups;
+    }
+   
+     public async Task CreateGroup(string groupName)
+    {
+
+         var userId = Convert.ToInt32(Context.UserIdentifier);
+        var group = new Group { GroupName = groupName };
+        _dbContext.Groups.Add(group);
+        await _dbContext.SaveChangesAsync();
+        await Clients.All.SendAsync("GroupCreated", group.GroupId, groupName);
+
+
+         var groups = await _groupRepository.GetAllGroupsWithMembership(userId);
+            await Clients.Caller.SendAsync("UpdateGroupsList", groups);
+    }
+
+public async Task SendUsernamesToClients()
+    {
+        var usernames = ConnectedUsers.Values.ToArray(); // ConnectedUsers sözlüğündeki değerleri alıyoruz
+
+        // Kullanıcı adlarını bağlı olan kullanıcılara gönder
+        await Clients.All.SendAsync("ReceiveUsernames", usernames);
+    }
+
+public async Task ChanceWrite(string receiverUserName)
+{
+    var senderUserName = Context.User.FindFirstValue(ClaimTypes.Name);
+
+
+    // Get receiver's ConnectionId from ConnectedUsers dictionary
+    var receiverConnectionId = ConnectedUsers.FirstOrDefault(x => x.Value == receiverUserName).Key;
+    if (receiverConnectionId == null)
+    {
+        // Receiver not found
+        await Clients.Caller.SendAsync("ErrorMessage", $"User {receiverUserName} not found");
+        return;
+    }
+
+    
+    // Send message to receiver
+    await Clients.Client(receiverConnectionId).SendAsync("ReceiveWrite", senderUserName);
+}
+
+public async Task OnFocusWrite(string receiverUserName)
+{
+    var senderUserName = Context.User.FindFirstValue(ClaimTypes.Name);
+
+
+    // Get receiver's ConnectionId from ConnectedUsers dictionary
+    var receiverConnectionId = ConnectedUsers.FirstOrDefault(x => x.Value == receiverUserName).Key;
+    if (receiverConnectionId == null)
+    {
+        // Receiver not found
+        await Clients.Caller.SendAsync("ErrorMessage", $"User {receiverUserName} not found");
+        return;
+    }
+
+    
+    // Send message to receiver
+    await Clients.Client(receiverConnectionId).SendAsync("ReceiveonFocusWrite", senderUserName);
+}
 
 
 

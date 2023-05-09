@@ -28,7 +28,8 @@ namespace ServerApp.Data
     return _context.Users.Select(u => new User
     {
         FullName = u.FullName,
-        UserName = u.UserName
+        UserName = u.UserName,
+        IsActive=u.IsActive
     }).ToList();
 }
 
@@ -42,7 +43,8 @@ namespace ServerApp.Data
                 UserImg = u.userImg,
                 Bio = u.Bio,
                 UserName = u.UserName,
-                Email = u.Email
+                Email = u.Email,
+                IsActive=u.IsActive
             })
             .FirstOrDefaultAsync();
 
@@ -57,7 +59,8 @@ public async Task<UserFoRChatInfoDTO> GetUserByUserForChat(string userName)
         {
             FullName = u.FullName,
             UserImg = u.userImg,
-            UserName = u.UserName
+            UserName = u.UserName,
+            IsActive=u.IsActive
         })
         .FirstOrDefaultAsync();
 
